@@ -1,17 +1,36 @@
+<div align="center">
+
 # Infomance SDK
 
-TypeScript SDK for the Infomance API - Brazilian municipalities socioeconomic and geospatial data.
+**TypeScript/JavaScript SDK for the Infomance API**
 
-## Installation
+*SDK TypeScript/JavaScript para a API Infomance*
+
+[![npm version](https://img.shields.io/npm/v/infomance.svg?style=flat-square)](https://www.npmjs.com/package/infomance)
+[![npm downloads](https://img.shields.io/npm/dm/infomance.svg?style=flat-square)](https://www.npmjs.com/package/infomance)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+
+[Documentation](https://api.infomance.com.br/docs) · [NPM Package](https://www.npmjs.com/package/infomance) · [Report Bug](https://github.com/inf0m4nce/sdk-js/issues)
+
+</div>
+
+---
+
+Brazilian municipalities socioeconomic and geospatial data.
+
+Dados socioeconômicos e geoespaciais de municípios brasileiros.
+
+## Installation / Instalação
 
 ```bash
-npm install @infomance/sdk
+npm install infomance
 ```
 
-## Quick Start
+## Quick Start / Início Rápido
 
 ```typescript
-import { InfomanceClient } from '@infomance/sdk';
+import { InfomanceClient } from 'infomance';
 
 const client = new InfomanceClient({
   apiKey: 'your-api-key',
@@ -206,7 +225,7 @@ const excel = await client.exportToExcel('/api/v1/comex/products', {
 ## Error Handling
 
 ```typescript
-import { InfomanceClient, InfomanceError } from '@infomance/sdk';
+import { InfomanceClient, InfomanceError } from 'infomance';
 
 try {
   const data = await client.getMunicipality('invalid-code');
@@ -241,7 +260,7 @@ import {
   School,
   POI,
   // ... and more
-} from '@infomance/sdk';
+} from 'infomance';
 ```
 
 ## Security / Segurança
@@ -253,7 +272,7 @@ Never hardcode your API key in source code. Use environment variables:
 Nunca hardcode sua API key no código. Use variáveis de ambiente:
 
 ```typescript
-import { InfomanceClient } from '@infomance/sdk';
+import { InfomanceClient } from 'infomance';
 
 const apiKey = process.env.INFOMANCE_API_KEY;
 if (!apiKey) {
