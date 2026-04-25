@@ -1,0 +1,57 @@
+{
+  "name": "infomance",
+  "version": "1.0.0",
+  "description": "SDK oficial para a Infomance API - Dados socioeconômicos de municípios brasileiros",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "infomance",
+    "api",
+    "sdk",
+    "brazil",
+    "municipalities",
+    "geospatial",
+    "socioeconomic",
+    "indicators",
+    "data",
+    "typescript"
+  ],
+  "author": "Infomance <contato@infomance.com.br>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/inf0m4nce/sdk-js"
+  },
+  "homepage": "https://infomance.com.br/docs",
+  "bugs": {
+    "url": "https://github.com/inf0m4nce/sdk-js/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "msw": "^2.7.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^4.0.16"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
