@@ -35,6 +35,21 @@ import {
   YearFilter,
   ExportFormat,
   ListResponse,
+  // European Types
+  GeoJSONFeatureCollection,
+  GeoJSONFeature,
+  PortugalMunicipalityParams,
+  FranceCommuneParams,
+  GermanyGemeindeParams,
+  NetherlandsGemeenteParams,
+  ItalyComuneParams,
+  SpainMunicipioParams,
+  // Unified EU API Types
+  EUCountry,
+  EULAUMunicipality,
+  EUNUTSRegion,
+  EULAUParams,
+  EUNUTSParams,
 } from './types';
 
 import {
@@ -1241,5 +1256,420 @@ export class InfomanceClient {
       ...options,
       format: 'xlsx',
     });
+  }
+
+  // ============================================
+  // European Geo API - Portugal
+  // ============================================
+
+  /**
+   * Lists Portuguese municipalities with boundaries.
+   *
+   * Returns all 308 Portuguese municipalities (Continental + Açores + Madeira)
+   * as GeoJSON FeatureCollection for choropleth maps.
+   *
+   * @param params - Filter parameters
+   * @param params.distrito - Filter by district (Lisboa, Porto, Faro, etc.)
+   * @param params.region - Filter by region (continental, acores, madeira)
+   * @param params.simplify - Geometry simplification tolerance (0.001-0.1)
+   * @param params.limit - Maximum results (default: 310)
+   * @param params.offset - Pagination offset
+   * @param options - Request options
+   * @returns GeoJSON FeatureCollection with municipality boundaries
+   *
+   * @example
+   * ```typescript
+   * // Get all Portuguese municipalities
+   * const municipalities = await client.getPortugalMunicipalities();
+   *
+   * // Get only Lisbon district
+   * const lisbon = await client.getPortugalMunicipalities({ distrito: 'Lisboa' });
+   * ```
+   */
+  async getPortugalMunicipalities(
+    params?: PortugalMunicipalityParams,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeatureCollection> {
+    return this.request(
+      `/api/v1/geo/pt/municipalities${this.buildQuery(params || {})}`,
+      options
+    );
+  }
+
+  /**
+   * Gets a single Portuguese municipality by DICOFRE code.
+   *
+   * @param dicofre - DICOFRE municipality code (e.g., "0806" for Odemira)
+   * @param options - Request options
+   * @returns GeoJSON Feature with municipality boundary and properties
+   * @throws {NotFoundError} If the municipality is not found
+   *
+   * @example
+   * ```typescript
+   * const odemira = await client.getPortugalMunicipality('0806');
+   * console.log(odemira.properties.name);
+   * ```
+   */
+  async getPortugalMunicipality(
+    dicofre: string,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeature> {
+    return this.request(`/api/v1/geo/pt/municipalities/${dicofre}`, options);
+  }
+
+  /**
+   * Gets Portuguese district boundaries.
+   *
+   * Returns all 18 Portuguese districts as GeoJSON FeatureCollection.
+   *
+   * @param options - Request options
+   * @returns GeoJSON FeatureCollection with district boundaries
+   */
+  async getPortugalDistricts(
+    options?: RequestOptions
+  ): Promise<GeoJSONFeatureCollection> {
+    return this.request('/api/v1/geo/pt/districts', options);
+  }
+
+  // ============================================
+  // European Geo API - France
+  // ============================================
+
+  /**
+   * Lists French communes with boundaries.
+   *
+   * Returns French municipalities as GeoJSON FeatureCollection.
+   * France has ~35,000 communes across 101 départements and 18 régions.
+   *
+   * @param params - Filter parameters
+   * @param params.departement - Filter by département code (75, 13, etc.)
+   * @param params.region - Filter by région code
+   * @param params.limit - Maximum results
+   * @param params.offset - Pagination offset
+   * @param options - Request options
+   * @returns GeoJSON FeatureCollection with commune boundaries
+   *
+   * @example
+   * ```typescript
+   * // Get communes in Paris département
+   * const paris = await client.getFranceCommunes({ departement: '75' });
+   * ```
+   */
+  async getFranceCommunes(
+    params?: FranceCommuneParams,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeatureCollection> {
+    return this.request(
+      `/api/v1/geo/fr/communes${this.buildQuery(params || {})}`,
+      options
+    );
+  }
+
+  /**
+   * Gets a single French commune by INSEE code.
+   *
+   * @param codeInsee - INSEE commune code (e.g., "75056" for Paris)
+   * @param options - Request options
+   * @returns GeoJSON Feature with commune boundary
+   */
+  async getFranceCommune(
+    codeInsee: string,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeature> {
+    return this.request(`/api/v1/geo/fr/communes/${codeInsee}`, options);
+  }
+
+  // ============================================
+  // European Geo API - Germany
+  // ============================================
+
+  /**
+   * Lists German municipalities (Gemeinden) with boundaries.
+   *
+   * Returns German municipalities as GeoJSON FeatureCollection.
+   * Germany has ~11,000 Gemeinden across 401 Kreise and 16 Bundesländer.
+   *
+   * @param params - Filter parameters
+   * @param params.bundesland - Filter by federal state (Bayern, Sachsen, etc.)
+   * @param params.kreis - Filter by district
+   * @param params.limit - Maximum results
+   * @param params.offset - Pagination offset
+   * @param options - Request options
+   * @returns GeoJSON FeatureCollection with Gemeinde boundaries
+   */
+  async getGermanyGemeinden(
+    params?: GermanyGemeindeParams,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeatureCollection> {
+    return this.request(
+      `/api/v1/geo/de/gemeinden${this.buildQuery(params || {})}`,
+      options
+    );
+  }
+
+  /**
+   * Gets a single German municipality by AGS code.
+   *
+   * @param ags - Amtlicher Gemeindeschlüssel (8 digits)
+   * @param options - Request options
+   * @returns GeoJSON Feature with Gemeinde boundary
+   */
+  async getGermanyGemeinde(
+    ags: string,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeature> {
+    return this.request(`/api/v1/geo/de/gemeinden/${ags}`, options);
+  }
+
+  // ============================================
+  // European Geo API - Netherlands
+  // ============================================
+
+  /**
+   * Lists Dutch municipalities (Gemeenten) with boundaries.
+   *
+   * Returns Dutch municipalities as GeoJSON FeatureCollection.
+   * Netherlands has 342 gemeenten across 12 provinces.
+   *
+   * @param params - Filter parameters
+   * @param params.province - Filter by province
+   * @param params.limit - Maximum results
+   * @param params.offset - Pagination offset
+   * @param options - Request options
+   * @returns GeoJSON FeatureCollection with Gemeente boundaries
+   */
+  async getNetherlandsGemeenten(
+    params?: NetherlandsGemeenteParams,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeatureCollection> {
+    return this.request(
+      `/api/v1/geo/nl/gemeenten${this.buildQuery(params || {})}`,
+      options
+    );
+  }
+
+  /**
+   * Gets a single Dutch municipality by CBS code.
+   *
+   * @param statcode - CBS gemeentecode
+   * @param options - Request options
+   * @returns GeoJSON Feature with Gemeente boundary
+   */
+  async getNetherlandsGemeente(
+    statcode: string,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeature> {
+    return this.request(`/api/v1/geo/nl/gemeenten/${statcode}`, options);
+  }
+
+  // ============================================
+  // European Geo API - Italy
+  // ============================================
+
+  /**
+   * Lists Italian municipalities (Comuni) with boundaries.
+   *
+   * Returns Italian municipalities as GeoJSON FeatureCollection.
+   * Italy has ~8,000 comuni across 107 province and 20 regioni.
+   *
+   * @param params - Filter parameters
+   * @param params.regione - Filter by region
+   * @param params.provincia - Filter by province
+   * @param params.limit - Maximum results
+   * @param params.offset - Pagination offset
+   * @param options - Request options
+   * @returns GeoJSON FeatureCollection with Comune boundaries
+   */
+  async getItalyComuni(
+    params?: ItalyComuneParams,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeatureCollection> {
+    return this.request(
+      `/api/v1/geo/it/comuni${this.buildQuery(params || {})}`,
+      options
+    );
+  }
+
+  /**
+   * Gets a single Italian municipality by ISTAT code.
+   *
+   * @param proCom - ISTAT comune code
+   * @param options - Request options
+   * @returns GeoJSON Feature with Comune boundary
+   */
+  async getItalyComune(
+    proCom: string,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeature> {
+    return this.request(`/api/v1/geo/it/comuni/${proCom}`, options);
+  }
+
+  // ============================================
+  // European Geo API - Spain
+  // ============================================
+
+  /**
+   * Lists Spanish municipalities (Municipios) with boundaries.
+   *
+   * Returns Spanish municipalities as GeoJSON FeatureCollection.
+   * Spain has ~8,000 municipios across 52 provinces and 17 comunidades autónomas.
+   *
+   * @param params - Filter parameters
+   * @param params.comunidad - Filter by autonomous community
+   * @param params.provincia - Filter by province
+   * @param params.limit - Maximum results
+   * @param params.offset - Pagination offset
+   * @param options - Request options
+   * @returns GeoJSON FeatureCollection with Municipio boundaries
+   */
+  async getSpainMunicipios(
+    params?: SpainMunicipioParams,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeatureCollection> {
+    return this.request(
+      `/api/v1/geo/es/municipios${this.buildQuery(params || {})}`,
+      options
+    );
+  }
+
+  /**
+   * Gets a single Spanish municipality by INE code.
+   *
+   * @param codigoIne - INE municipio code
+   * @param options - Request options
+   * @returns GeoJSON Feature with Municipio boundary
+   */
+  async getSpainMunicipio(
+    codigoIne: string,
+    options?: RequestOptions
+  ): Promise<GeoJSONFeature> {
+    return this.request(`/api/v1/geo/es/municipios/${codigoIne}`, options);
+  }
+
+  // ============================================
+  // Unified EU API (BFF endpoints)
+  // ============================================
+
+  /**
+   * Lists all EU countries with LAU coverage.
+   *
+   * Returns summary information for all 34 EU/EEA countries
+   * including LAU municipality counts.
+   *
+   * @param options - Request options
+   * @returns Array of EU countries with LAU counts
+   *
+   * @example
+   * ```typescript
+   * const countries = await client.getEUCountries();
+   * console.log(countries.length);  // 34
+   * countries.forEach(c => console.log(`${c.name}: ${c.lau_count} LAUs`));
+   * ```
+   */
+  async getEUCountries(options?: RequestOptions): Promise<EUCountry[]> {
+    return this.request('/api/v1/eu/countries', options);
+  }
+
+  /**
+   * Lists EU LAU municipalities with optional filtering.
+   *
+   * Returns municipalities (Local Administrative Units) across
+   * all EU/EEA countries. Use filters to narrow results by country,
+   * NUTS3 region, or population range.
+   *
+   * @param params - Filter and pagination parameters
+   * @param params.country - Filter by country code (e.g., "PT", "DE", "FR")
+   * @param params.nuts3 - Filter by NUTS3 region code
+   * @param params.min_population - Minimum population filter
+   * @param params.max_population - Maximum population filter
+   * @param params.limit - Maximum results (default: 100)
+   * @param params.offset - Pagination offset
+   * @param options - Request options
+   * @returns Paginated list of LAU municipalities
+   *
+   * @example
+   * ```typescript
+   * // List Portuguese municipalities
+   * const portugal = await client.getEULAU({ country: 'PT', limit: 100 });
+   * console.log(`Found ${portugal.items.length} Portuguese LAUs`);
+   *
+   * // Filter by population
+   * const largeCities = await client.getEULAU({
+   *   country: 'DE',
+   *   min_population: 500000
+   * });
+   * ```
+   */
+  async getEULAU(
+    params?: EULAUParams,
+    options?: RequestOptions
+  ): Promise<ListResponse<EULAUMunicipality>> {
+    return this.request(
+      `/api/v1/eu/lau${this.buildQuery(params || {})}`,
+      options
+    );
+  }
+
+  /**
+   * Gets a single EU LAU municipality by ID.
+   *
+   * @param lauId - The LAU ID (e.g., "PT_030875" for Lisboa, "DE_05315000" for Köln)
+   * @param options - Request options
+   * @returns LAU municipality details
+   * @throws {NotFoundError} If the LAU ID is not found
+   *
+   * @example
+   * ```typescript
+   * const lisbon = await client.getEULAUById('PT_030875');
+   * console.log(lisbon.name);             // "Lisboa"
+   * console.log(lisbon.population);       // 545923
+   * console.log(lisbon.country_code);     // "PT"
+   * ```
+   */
+  async getEULAUById(
+    lauId: string,
+    options?: RequestOptions
+  ): Promise<EULAUMunicipality> {
+    return this.request(`/api/v1/eu/lau/${lauId}`, options);
+  }
+
+  /**
+   * Lists EU NUTS regions with optional filtering.
+   *
+   * Returns NUTS (Nomenclature of Territorial Units for Statistics)
+   * regions at any level (0-3). Use to understand the administrative
+   * hierarchy of EU countries.
+   *
+   * @param params - Filter and pagination parameters
+   * @param params.country - Filter by country code
+   * @param params.level - Filter by NUTS level (0=country, 1=major region, 2=region, 3=province)
+   * @param params.parent - Filter by parent NUTS code
+   * @param params.limit - Maximum results
+   * @param params.offset - Pagination offset
+   * @param options - Request options
+   * @returns Paginated list of NUTS regions
+   *
+   * @example
+   * ```typescript
+   * // Get all NUTS3 regions in Germany
+   * const germanyNuts3 = await client.getEUNUTS({
+   *   country: 'DE',
+   *   level: 3
+   * });
+   *
+   * // Get regions under a specific parent
+   * const subRegions = await client.getEUNUTS({
+   *   parent: 'DEA'  // North Rhine-Westphalia
+   * });
+   * ```
+   */
+  async getEUNUTS(
+    params?: EUNUTSParams,
+    options?: RequestOptions
+  ): Promise<ListResponse<EUNUTSRegion>> {
+    return this.request(
+      `/api/v1/eu/nuts${this.buildQuery(params || {})}`,
+      options
+    );
   }
 }

@@ -281,3 +281,186 @@ export interface OverviewResponse<T> {
 
 // Export Format
 export type ExportFormat = 'json' | 'csv' | 'xlsx';
+
+// ============================================
+// European Data Types
+// ============================================
+
+/** Supported countries for European data */
+export type EuropeanCountry = 'pt' | 'fr' | 'de' | 'nl' | 'it' | 'es' | 'be' | 'at';
+
+/** GeoJSON Feature for geographic data */
+export interface GeoJSONFeature {
+  type: 'Feature';
+  properties: Record<string, unknown>;
+  geometry: {
+    type: string;
+    coordinates: unknown;
+  };
+}
+
+/** GeoJSON FeatureCollection */
+export interface GeoJSONFeatureCollection {
+  type: 'FeatureCollection';
+  features: GeoJSONFeature[];
+}
+
+// Portugal Types
+export interface PortugalMunicipality {
+  dicofre: string;
+  name: string;
+  distrito: string;
+  region: 'Continental' | 'Açores' | 'Madeira';
+  area_km2?: number;
+  population?: number;
+}
+
+export interface PortugalMunicipalityParams {
+  distrito?: string;
+  region?: 'continental' | 'acores' | 'madeira';
+  simplify?: number;
+  limit?: number;
+  offset?: number;
+}
+
+// France Types
+export interface FranceCommune {
+  code_insee: string;
+  nom: string;
+  code_departement: string;
+  code_region: string;
+  population?: number;
+  area_km2?: number;
+}
+
+export interface FranceCommuneParams {
+  departement?: string;
+  region?: string;
+  limit?: number;
+  offset?: number;
+}
+
+// Germany Types
+export interface GermanyGemeinde {
+  ags: string;
+  ars: string;
+  name: string;
+  bundesland: string;
+  kreis?: string;
+  population?: number;
+  area_km2?: number;
+}
+
+export interface GermanyGemeindeParams {
+  bundesland?: string;
+  kreis?: string;
+  limit?: number;
+  offset?: number;
+}
+
+// Netherlands Types
+export interface NetherlandsGemeente {
+  statcode: string;
+  statnaam: string;
+  province?: string;
+  population?: number;
+  area_km2?: number;
+}
+
+export interface NetherlandsGemeenteParams {
+  province?: string;
+  limit?: number;
+  offset?: number;
+}
+
+// Italy Types
+export interface ItalyComune {
+  pro_com: string;
+  comune: string;
+  provincia?: string;
+  regione?: string;
+  population?: number;
+  area_km2?: number;
+}
+
+export interface ItalyComuneParams {
+  regione?: string;
+  provincia?: string;
+  limit?: number;
+  offset?: number;
+}
+
+// Spain Types
+export interface SpainMunicipio {
+  codigo_ine: string;
+  nombre: string;
+  provincia?: string;
+  comunidad_autonoma?: string;
+  population?: number;
+  area_km2?: number;
+}
+
+export interface SpainMunicipioParams {
+  comunidad?: string;
+  provincia?: string;
+  limit?: number;
+  offset?: number;
+}
+
+// ============================================
+// Unified EU API Types (BFF endpoints)
+// ============================================
+
+/** EU Country from /api/v1/eu/countries */
+export interface EUCountry {
+  code: string;
+  name: string;
+  lau_count: number;
+  population?: number;
+  area_km2?: number;
+}
+
+/** EU LAU Municipality from /api/v1/eu/lau */
+export interface EULAUMunicipality {
+  lau_id: string;
+  name: string;
+  country_code: string;
+  nuts3_code?: string;
+  population?: number;
+  population_density?: number;
+  area_km2?: number;
+  gdp_per_capita?: number;
+  unemployment_rate?: number;
+  data_completeness?: number;
+}
+
+/** EU NUTS Region from /api/v1/eu/nuts */
+export interface EUNUTSRegion {
+  code: string;
+  name: string;
+  level: number;
+  country_code: string;
+  parent_code?: string;
+  lau_count?: number;
+  population?: number;
+  area_km2?: number;
+}
+
+/** Parameters for listing EU LAU municipalities */
+export interface EULAUParams {
+  country?: string;
+  nuts3?: string;
+  min_population?: number;
+  max_population?: number;
+  limit?: number;
+  offset?: number;
+}
+
+/** Parameters for listing EU NUTS regions */
+export interface EUNUTSParams {
+  country?: string;
+  level?: number;
+  parent?: string;
+  limit?: number;
+  offset?: number;
+}
