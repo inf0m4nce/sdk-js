@@ -73,7 +73,7 @@ import {
   sleep,
 } from './retry';
 
-const SDK_VERSION = '1.0.0';
+const SDK_VERSION = '1.2.0';
 const DEFAULT_BASE_URL = 'https://api.infomance.com.br';
 
 // ============================================
@@ -499,7 +499,7 @@ export class InfomanceClient {
     options?: RequestOptions
   ): Promise<ListResponse<MunicipalityIndicators>> {
     return this.request(
-      `/api/v1/indicators/municipalities${this.buildQuery(params || {})}`,
+      `/api/v1/geo/municipalities${this.buildQuery(params || {})}`,
       options
     );
   }
@@ -528,104 +528,51 @@ export class InfomanceClient {
     options?: RequestOptions
   ): Promise<IndicatorsMunicipality> {
     return this.request(
-      `/api/v1/indicators/municipalities/${ibgeCode}`,
+      `/api/v1/cities/${ibgeCode}/profile`,
       options
     );
   }
 
   /**
-   * Gets economic indicators for a municipality.
-   *
-   * Retrieves detailed economic data including PIB breakdown by sector
-   * (agriculture, industry, services) and tax revenue.
-   *
-   * @param ibgeCode - The 7-digit IBGE municipality code
-   * @param options - Request options (timeout, AbortSignal)
-   * @returns Economic data for the municipality
-   * @throws {NotFoundError} If the municipality is not found
-   *
-   * @example
-   * ```typescript
-   * const economic = await client.getMunicipalityEconomic('3550308');
-   * console.log(`PIB: R$ ${economic.pib.toLocaleString()}`);
-   * console.log(`Services: ${(economic.services / economic.pib * 100).toFixed(1)}%`);
-   * ```
+   * @deprecated This endpoint does not exist in the API. Use getMunicipality() instead.
    */
   async getMunicipalityEconomic(
     ibgeCode: string,
-    options?: RequestOptions
+    _options?: RequestOptions
   ): Promise<EconomicData> {
-    return this.request(
-      `/api/v1/indicators/municipalities/${ibgeCode}/economic`,
-      options
+    console.warn(
+      'getMunicipalityEconomic() is deprecated - endpoint does not exist. Use getMunicipality() instead.'
+    );
+    throw new NotFoundError(
+      'This endpoint does not exist. Use getMunicipality() for city profile data.'
     );
   }
 
   /**
-   * Gets infrastructure indicators for a municipality.
-   *
-   * Retrieves infrastructure data including water coverage, sewage treatment,
-   * water loss rates, and internet/fiber coverage.
-   *
-   * @param ibgeCode - The 7-digit IBGE municipality code
-   * @param options - Request options (timeout, AbortSignal)
-   * @returns Infrastructure data for the municipality
-   * @throws {NotFoundError} If the municipality is not found
-   *
-   * @example
-   * ```typescript
-   * const infra = await client.getMunicipalityInfrastructure('3550308');
-   * console.log(`Water coverage: ${infra.water_coverage}%`);
-   * console.log(`Water loss: ${infra.water_loss}%`);
-   * ```
+   * @deprecated This endpoint does not exist in the API. Use getMunicipality() instead.
    */
   async getMunicipalityInfrastructure(
     ibgeCode: string,
-    options?: RequestOptions
+    _options?: RequestOptions
   ): Promise<InfrastructureData> {
-    return this.request(
-      `/api/v1/indicators/municipalities/${ibgeCode}/infrastructure`,
-      options
+    console.warn(
+      'getMunicipalityInfrastructure() is deprecated - endpoint does not exist. Use getMunicipality() instead.'
+    );
+    throw new NotFoundError(
+      'This endpoint does not exist. Use getMunicipality() for city profile data.'
     );
   }
 
   /**
-   * Gets a ranking of municipalities by a specific indicator.
-   *
-   * Returns municipalities ranked by indicators such as PIB per capita,
-   * population, or infrastructure metrics.
-   *
-   * @param indicator - The indicator to rank by (e.g., "pib_per_capita", "population")
-   * @param params - Filter and pagination parameters
-   * @param params.state - Filter by state UF code
-   * @param params.year - Filter by year
-   * @param params.limit - Maximum results (default: 10)
-   * @param params.order - Sort order: "asc" or "desc" (default: "desc")
-   * @param options - Request options (timeout, AbortSignal)
-   * @returns Array of ranking entries with position, municipality, and value
-   *
-   * @example
-   * ```typescript
-   * // Get top 5 cities by PIB per capita in SP
-   * const ranking = await client.getIndicatorsRanking('pib_per_capita', {
-   *   state: 'SP',
-   *   limit: 5,
-   *   order: 'desc',
-   * });
-   * ranking.forEach(entry => {
-   *   console.log(`${entry.position}. ${entry.name}: R$ ${entry.value}`);
-   * });
-   * ```
+   * @deprecated This endpoint does not exist in the API.
    */
   async getIndicatorsRanking(
-    indicator: string,
-    params?: RankingParams,
-    options?: RequestOptions
+    _indicator: string,
+    _params?: RankingParams,
+    _options?: RequestOptions
   ): Promise<RankingEntry[]> {
-    return this.request(
-      `/api/v1/indicators/ranking/${indicator}${this.buildQuery(params || {})}`,
-      options
-    );
+    console.warn('getIndicatorsRanking() is deprecated - endpoint does not exist.');
+    throw new NotFoundError('This endpoint does not exist.');
   }
 
   // ============================================
